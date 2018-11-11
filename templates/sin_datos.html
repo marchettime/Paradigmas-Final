@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Error en Procesamiento{% endblock %}
+
+{% block page_content %}
+<div>
+	<h1>ATENCIÓN</h1>
+	<h3>Estimado Usuario: se han detectado errores en el procesamiento de archivo "Ventas".</p>
+	<h3>Suministre esta información a su Referente para aplicar su proceso de contingencia:</p>
+	{% for error in errores %}
+		<p>* {{ error }}</p>
+	{% endfor %}
+	<p></p>
+	<p>Muchas Gracias!</P>
+</div>
+{% endblock %}

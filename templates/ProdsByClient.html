@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Productos por cliente{% endblock %}
+{% block page_content %}
+<div class="page-header">    
+    <h1>Productos por Cliente</h1>
+	{{ wtf.quick_form(formulario) }}
+</div>
+<body>
+<div class="content">
+	{% if filtro|length >= 3 %}
+		{% if filas %}		
+			{% if opciones|count == 1 %}
+			<h3>Cliente elegido: {{ opciones[0] }}</h3>
+			<div>
+				<table class="table ">
+					<thead>
+						<tr>
+							<th class="text-center">Código</th>
+							<th class="text-center">Producto</th>
+							<!--<th align="center" >Cliente</th>-->
+							<th class="text-center">Cantidad</th>
+							<th class="text-center">Precio Unitario</th>
+							<th class="text-center" >Monto de Compra</th>
+						</tr>
+					</thead>
+					{% for fila in filas %}
+					<tbody>
+						<TR>
+							<TD align="center">{{fila.codigo}}</TD>
+							<TD align="left">{{fila.producto}}</TD>
+							<!--<TD >{{fila.cliente}}</TD>-->
+							<TD align="center">{{fila.cantidad}}</TD>
+							<TD align="center">$ {{'%0.2f'|format(fila.precioUnitario|float)}}</TD>
+							<TD align="center">$ {{ '%0.2f'|format(fila.precioUnitario|float * fila.cantidad|int) }}</TD>
+						</TR>
+					</tbody>
+					{% endfor %}
+				</table>
+			</div>	
+			{% else %}
+				<h4>Se detectó más de un Cliente que contiene la cadena {{ filtro }}.</h4>
+				<form method="POST" action="{{ url_for('productosPorCliente') }}"> <!--El urlfor apunta a la funcion EN PYTHON-->
+				<div class="input-group">
+				<span class="input-group-addon"> Seleccione uno:</span>
+				<select class="form-control" id="seleccion" name="seleccion">
+					{% for cliente in opciones %}
+						<option value="{{cliente}}">{{cliente}}</option>
+					{% endfor %}
+				</select>
+				</div>
+				<button type="submit" class="btn btn-success">Mandale mecha!!</button>
+				</form>
+				</div>
+			{% endif %}
+		{% else %}
+			<p>No se han encontrado registros para el Cliente ingresado.</p>
+		{% endif %}
+	{% endif %}
+</div>
+</body>
+{% endblock %}

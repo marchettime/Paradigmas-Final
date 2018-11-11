@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Mejores Clientes{% endblock %}
+{% block page_content %}
+<div class="page-header">    
+    <h1>Mejores Clientes</h1>
+</div>
+<div class="content">
+	{% if filas %}
+	<p><b>TOP 5</b> de Clientes </p>
+	<div>
+		<table class="table table-sm  table-dark">
+			<thead>
+				<tr>
+					<th class="text-center" >Cliente</th>
+					<th class="text-center" >Valor Total de Compras</th>
+				</tr>
+			</thead>
+			{% for fila in filas %}
+			<tbody>
+				<TR class="thead-dark">
+					<TD align="center">{{fila.0}}</TD>
+					<TD align="center">$ {{ '%0.2f'|format(fila.1)}}</TD>
+				</TR>
+			</tbody>
+			{% endfor %}
+		</table>
+	</div>	
+	{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+linea  = 0
+cabeceras = ['','','','','']
+while registro
+	validaColumna(registro)
+	if linea == 0: #hacer en metodo
+		cabeceras[0] = registro[0]
+		cabeceras[1] = registro[1]
+		cabeceras[2] = registro[2]
+		cabeceras[3] = registro[3]
+		cabeceras[4] = registro[4]
+		
+	validacionCampoCodigo
+	validacionCampoCantidad
+	validacionCampoPrecio
+	validacionString()
+	linea++
+	
+if errorEncontrado:
+	print "Verificar los errores que se han marcado y volver a intentar"
+else #corre el programa
+
+#Adentro de cada funcion:
+aviso=0
+#si se encontró error 
+if aviso==0:
+	print "Se encontró error en validacion blablabla"
+	aviso=1
+
+	
+	
+	ARCHIVO:	PRODUCTO,CLIENTE, CODIGO, PRECIO
+	MATRIZ: 	CODIGO,	PRODUCTO,	CLIENTE,	CANTIDAD,	PRECIO
+	
+	
+	
+	
+	
+	
+	
+	

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+
+{% block title %}Productos más Vendidos{% endblock %}
+{% block page_content %}
+<div class="page-header">    
+    <h1>Productos más Vendidos</h1>
+	
+</div>
+<div class="content">
+	{% if filas %}
+	<div>
+		<table class="table table-sm  table-dark">
+			<thead>
+				<tr>
+					<th class="text-center" >Producto</th> 
+					<th class="text-center" >Cantidad</th>
+				</tr>
+			</thead>
+			{% for fila in filas %}
+			<tbody>
+				<TR class="thead-dark">
+					<TD class="text-center" >{{fila.0}}</TD>
+					<TD class="text-center" >{{fila.1}}</TD>
+				</TR>
+			</tbody>
+			{% endfor %}
+		</table>
+	</div>	
+	{% endif %}
+</div>
+{% endblock %}

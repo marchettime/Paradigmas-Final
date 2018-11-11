@@ -1,0 +1,68 @@
+{% extends "bootstrap/base.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.png') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename = 'favicon.png') }}" type="image/x-icon">
+{% endblock %}
+
+{% block title %}Hola {{ nombre }}{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">H-Inc.</a>
+        </div>
+        <div class="navbar-collapse collapse">
+			{% if session['username'] %}
+			<ul class="nav navbar-nav">
+                <li><a href="/">Inicio</a></li>
+				{% if session['username'] == 'admin' %}
+					<li><a href="/registrar">Registrar Usuario</a></li>
+				{% endif %}
+				<!--Accesos a tablas (logueado)-->
+				{% if errores|length == 0  %}
+				<li><a href="/ProdsByClient">Productos X Cliente</a></li>
+				<li><a href="/ClientsByProd">Clientes X Producto</a></li>
+				<li><a href="/MostSoldProds">Productos Más Vendidos</a></li>
+				<li><a href="/BestClients">Mejores Clientes</a></li>
+				{% endif %}
+				<li><a href="/logout">Salir</a></li>
+            </ul>
+			{% else %}
+			<ul class="nav navbar-nav">
+                <li><a href="/">Inicio</a></li>
+				<li><a href="/ingresar">Ingresar</a></li>
+            </ul>
+			{% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+
+
