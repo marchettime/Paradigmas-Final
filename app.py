@@ -268,7 +268,8 @@ def cargaArchivo(): #Guardamos el archivo en una Matriz
     #Finalizada la carga, validamos el largo de lo que cargamos, no sea inferior al archivo leido
     print("Registros en Archivo:", nroLinea, "| Registros Procesados OK:", len(listaDelArchivo))
     if len(listaDelArchivo)< nroLinea:
-        mensaje = ("Registros en Archivo:", nroLinea, "| Registros Procesados OK:", len(listaDelArchivo))
+        mensaje = "Registros en Archivo: {0} | Registros Procesados OK: {1}".format(nroLinea, len(listaDelArchivo))
+        #mensaje = ("Registros en Archivo:", nroLinea, "| Registros Procesados OK:", len(listaDelArchivo))
         mensajesErrores.append(mensaje)
         return None
     else:
