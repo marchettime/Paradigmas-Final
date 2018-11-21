@@ -6,7 +6,7 @@ from flask import Flask, render_template, redirect, url_for, flash, session, req
 from flask_bootstrap import Bootstrap
 # from flask_moment import Moment | Comentado por Colombo
 from flask_script import Manager
-from forms import LoginForm, SaludarForm, RegistrarForm, BuscarForm # , BuscarOpcionForm
+from forms import LoginForm, SaludarForm, RegistrarForm, BuscarForm, AltaVentaForm
 #Import para verificar si existe el archivo ventas que vamos a usar para procesar:
 import os.path
 #Generamos un archivo que tenga las clases generadas por nosotros y las cargamos para su uso con un from
@@ -24,11 +24,13 @@ app.config['SECRET_KEY'] = 'un string que funcione como llave'
 tablaRegistros = None
 tablaFiltrada = None
 ultimasVentas = None
-mensajesErrores = []
+mensajesErroresArchivo = []
+mensajesErroresAltaVenta = []
+cabeceras = ['','','','',''] #Lo defino global adrede porque lo tengo que tener en cuenta al momento de grabar!
 
 @app.route('/')
 def index():
-    return render_template('index.html', fecha_actual=datetime.utcnow(), errores = mensajesErrores)
+    return render_template('index.html', fecha_actual=datetime.utcnow(), errores = mensajesErroresArchivo)
 
 
 @app.errorhandler(404)
@@ -41,8 +43,12 @@ def error_interno(e):
     return render_template('500.html'), 500
 
 
+
 @app.route('/ingresar', methods=['GET', 'POST'])
 def ingresar():
+    tablaRegistros = cargaArchivo()
+    if tablaRegistros != None: 
+            ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
     if 'username' not in session:
         formulario = LoginForm()
         if formulario.validate_on_submit():
@@ -53,17 +59,22 @@ def ingresar():
                     if formulario.usuario.data == registro[0] and formulario.password.data == registro[1]:
                         flash('Bienvenido') #flash es cola de mensaje
                         session['username'] = formulario.usuario.data
-                        if len(mensajesErrores) == 0:
-                            return render_template('ingresado.html', ultimasVentas = ultimasVentas)
+                        if len(mensajesErroresArchivo) == 0:
+                            return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
                         else: 
-                            return render_template('ingresado.html', errores = mensajesErrores)
+                            return render_template('ingresado.html', errores = mensajesErroresArchivo)
                     registro = next(archivo_csv, None)
                 else:
                     flash('Revisá nombre de usuario y contraseña')
                     return redirect(url_for('ingresar'))
         return render_template('login.html', formulario=formulario)
     else:
-        return render_template('ingresado.html', ultimasVentas = ultimasVentas, errores = mensajesErrores)
+        if len(mensajesErroresArchivo) == 0:
+            return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
+        else: 
+            return render_template('ingresado.html', errores = mensajesErroresArchivo)
+        #return render_template('ingresado.html', errores = mensajesErroresArchivo)
+        #return render_template('ingresado.html', ultimasVentas = ultimasVentas, errores = mensajesErroresArchivo)
 
 
 @app.route('/registrar', methods=['GET', 'POST'])
@@ -80,7 +91,7 @@ def registrar():
                 return redirect(url_for('ingresar'))
             else:
                 flash('Las passwords no matchean')
-        return render_template('registrar.html', form=formulario, errores = mensajesErrores)
+        return render_template('registrar.html', form=formulario, errores = mensajesErroresArchivo)
     else:
         return render_template('sin_permiso.html')
 
@@ -101,13 +112,76 @@ def logout():
     else:
         return render_template('sin_permiso.html')   
 
- 
+###INICIO DE FINAL###
+@app.route('/LatestSales', methods=['GET','POST'])
+def ultimasVentas():
+    if 'username' in session:
+        tablaRegistros = cargaArchivo()
+        if len(mensajesErroresArchivo) == 0:
+            if tablaRegistros != None: #Si la lista del archivo no devuelve vacio, mostramos la data:
+                ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
+            return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
+        else:
+            return render_template('sin_datos.html', errores = mensajesErroresArchivo)
+    else:
+        return render_template('sin_permiso.html') 
+
+@app.route('/AddSale', methods=['GET', 'POST'])
+def agregarVenta():
+    if 'username' in session:
+        formulario = AltaVentaForm()
+        if request.method == 'GET':
+            formulario = AltaVentaForm()
+            return render_template('AddSale.html', formulario=formulario)
+        else: 
+            if request.method == 'POST' and formulario.validate():
+                venta = LineaTabla('','','','','')
+                ventaOrdenado = ['','','','','']
+                venta.codigo = formulario.codigo.data
+                venta.producto = formulario.producto.data
+                venta.cantidad = formulario.cantidad.data
+                venta.precioUnitario = formulario.precio.data
+                venta.cliente = formulario.nombreCliente.data
+                print('CODIGO: {0} | PRODUCTO: {1} | CANTIDAD: {2} | PRECIO: {3} | CLIENTE: {4}'.format(venta.codigo,venta.producto,venta.cantidad,venta.precioUnitario,venta.cliente))
+                i = 0
+                while i < 5:
+                    if cabeceras[i] == 'CODIGO':
+                        ventaOrdenado[i] = venta.codigo
+                    elif cabeceras[i] == 'PRODUCTO':
+                        ventaOrdenado[i] = venta.producto
+                    elif cabeceras[i] == 'CLIENTE':
+                        ventaOrdenado[i] = venta.cliente
+                    elif cabeceras[i] == 'CANTIDAD':
+                        ventaOrdenado[i] = venta.cantidad
+                    elif cabeceras[i] == 'PRECIO':
+                        ventaOrdenado[i] = venta.precioUnitario
+                    i = i + 1
+                
+                pre = 0
+                while pre < 5:
+                    print('CABECERA: {0} | DATO FORMULARIO: {1}'.format(cabeceras[pre],ventaOrdenado[pre]))
+                    pre = pre + 1
+                #COPIA DE ALTA DE USUARIOS    
+                with open('ventas', 'a+') as archivo:
+                    archivo_csv = csv.writer(archivo)
+                    registro = [ventaOrdenado[0],ventaOrdenado[1],ventaOrdenado[2],ventaOrdenado[3],ventaOrdenado[4]]
+                    archivo_csv.writerow(registro)
+                flash('Venta registrada con éxito!')
+                return redirect(url_for('LatestSales'))
+                #return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
+            else:
+                return render_template('AddSale.html', formulario=formulario)
+    else:
+        return render_template('sin_permiso.html') 
+
+
 ###INICIO DE PARCIAL###
 #/ProdsByClient - Productos por Cliente
 @app.route('/ProdsByClient', methods=['GET','POST'])
 def productosPorCliente():
     if 'username' in session:
-        if len(mensajesErrores) == 0:
+        tablaRegistros = cargaArchivo()
+        if len(mensajesErroresArchivo) == 0:
             formularioBuscar = BuscarForm()
             # 
             #Me baso en buscar si se completo una seleccion mediante el post
@@ -133,7 +207,7 @@ def productosPorCliente():
                 flash('Recuerde que el filtro debe contener al menos 3 caracteres')
                 return render_template('ProdsByClient.html', formulario=formularioBuscar)
         else:
-            return render_template('sin_datos.html', errores = mensajesErrores)
+            return render_template('sin_datos.html', errores = mensajesErroresArchivo)
     else:
         return render_template('sin_permiso.html')
     
@@ -141,7 +215,8 @@ def productosPorCliente():
 @app.route('/ClientsByProd', methods=['GET','POST'])
 def clientesPorProducto():
     if 'username' in session:
-        if len(mensajesErrores) == 0:
+        tablaRegistros = cargaArchivo()
+        if len(mensajesErroresArchivo) == 0:
             formularioBuscar = BuscarForm()
             # 
             #Me baso en buscar si se completo una seleccion mediante el post
@@ -167,7 +242,7 @@ def clientesPorProducto():
                 flash('Recuerde que el filtro debe contener al menos 3 caracteres')
                 return render_template('ClientsByProd.html', formulario=formularioBuscar)
         else:
-            return render_template('sin_datos.html', errores = mensajesErrores)
+            return render_template('sin_datos.html', errores = mensajesErroresArchivo)
     else:
         return render_template('sin_permiso.html')
 
@@ -176,7 +251,8 @@ def clientesPorProducto():
 @app.route('/MostSoldProds', methods=['GET'])
 def productosMasVendidos():
     if 'username' in session:
-        if len(mensajesErrores) == 0:
+        tablaRegistros = cargaArchivo()
+        if len(mensajesErroresArchivo) == 0:
             #Buscar segun suma!
             #Paso a un array las cantidades y los codigos de productos para mapearlos con el numpy. Es buena practica? Y... por ahora no se me ocurre otra.
             listaProds = []
@@ -191,7 +267,7 @@ def productosMasVendidos():
     
             return render_template('MostSoldProds.html', filas=listaProds)
         else:
-            return render_template('sin_datos.html', errores = mensajesErrores)
+            return render_template('sin_datos.html', errores = mensajesErroresArchivo)
     else:
         return render_template('sin_permiso.html')
   
@@ -200,7 +276,8 @@ def productosMasVendidos():
 @app.route('/BestClients', methods=['GET'])
 def mejoresClientes():
     if 'username' in session:
-        if len(mensajesErrores) == 0:
+        tablaRegistros = cargaArchivo()
+        if len(mensajesErroresArchivo) == 0:
             #Buscar segun suma!
             #Paso a un array las cantidades y los codigos de productos para mapearlos con el numpy. Es buena practica? Y... por ahora no se me ocurre otra.
             listaClientes = []
@@ -215,17 +292,18 @@ def mejoresClientes():
             
             return render_template('BestClients.html', filas=listaClientes)
         else:
-            return render_template('sin_datos.html', errores = mensajesErrores)
+            return render_template('sin_datos.html', errores = mensajesErroresArchivo)
     else:
         return render_template('sin_permiso.html')
    
     
 def cargaArchivo(): #Guardamos el archivo en una Matriz
     #generar matriz de datos | Cabeceras: CODIGO,PRODUCTO,CLIENTE,CANTIDAD,PRECIO
-    cabeceras = ['','','','','']
+    
     nroLinea = -1
     muestra = LineaTabla('','','','','')
     listaDelArchivo = []
+    mensajesErroresArchivo.clear()
    
     with open('ventas') as archivo: #carga de archivo de ventas
         archivo_csv = csv.reader(archivo)
@@ -257,7 +335,7 @@ def cargaArchivo(): #Guardamos el archivo en una Matriz
                                 muestra.precioUnitario=registro[i]
                         else:
                             msjError = 'La columna informada no corresponde a un valor esperado'
-                            mensajesErrores.append(msjError)
+                            mensajesErroresArchivo.append(msjError)
                             print(mensaje)
                         i = i + 1
                     if muestra.codigo != '' and muestra.producto != '' and  muestra.cliente != '' and  muestra.cantidad != '' and  muestra.precioUnitario != '':
@@ -270,7 +348,7 @@ def cargaArchivo(): #Guardamos el archivo en una Matriz
     if len(listaDelArchivo)< nroLinea:
         mensaje = "Registros en Archivo: {0} | Registros Procesados OK: {1}".format(nroLinea, len(listaDelArchivo))
         #mensaje = ("Registros en Archivo:", nroLinea, "| Registros Procesados OK:", len(listaDelArchivo))
-        mensajesErrores.append(mensaje)
+        mensajesErroresArchivo.append(mensaje)
         return None
     else:
         return listaDelArchivo
@@ -279,7 +357,7 @@ def cargaArchivo(): #Guardamos el archivo en una Matriz
 def validacionCantidadColumnas(registro, nroLinea): #Que sean 5. Y, que ninguna sea repetida.
     if len(registro) != 5:
         msjError = "Error en cantidad de columnas en la linea {0}!".format(nroLinea)
-        mensajesErrores.append(msjError)
+        mensajesErroresArchivo.append(msjError)
         print(msjError)
         return False
     return True
@@ -290,7 +368,7 @@ def validacionCampoCodigo(campo, nroLinea): #Valida el formato no admite nulo y 
         return True
     else:
         msjError = ("El campo \"CÓDIGO\" de la Línea {0} no cumple con el formato necesario!".format(nroLinea))
-        mensajesErrores.append(msjError)
+        mensajesErroresArchivo.append(msjError)
         return False
 
 def validacionCampoCantidad(campo, nroLinea): #Sólo pueden haber enteros
@@ -299,7 +377,7 @@ def validacionCampoCantidad(campo, nroLinea): #Sólo pueden haber enteros
     else:
         #print("El campo \"CANTIDAD\" de la Línea {0} no cumple con el formato necesario!".format(nroLinea))
         msjError = ("El campo \"CANTIDAD\" de la Línea {0} no cumple con el formato necesario!".format(nroLinea))
-        mensajesErrores.append(msjError)
+        mensajesErroresArchivo.append(msjError)
         return False
 
 def validacionCampoPrecio(campo, nroLinea): #Flotante con 2 decimales
@@ -308,27 +386,27 @@ def validacionCampoPrecio(campo, nroLinea): #Flotante con 2 decimales
     else:
         #print("El campo \"PRECIO\" de la Línea {0} no cumple con el formato necesario!".format(nroLinea))
         msjError = ("El campo \"PRECIO\" de la Línea {0} no cumple con el formato necesario!".format(nroLinea))
-        mensajesErrores.append(msjError)
+        mensajesErroresArchivo.append(msjError)
         return False
-  
+ 
+ 
 if __name__ == "__main__":
     # app.run(host='0.0.0.0', debug=True)
-    
     if os.path.isfile('ventas'): #Con esta libreria nos permite verificar la existencia del archivo
         tablaRegistros = cargaArchivo()
-        if tablaRegistros != None: #Si la lista del archivo no devuelve vacio, mostramos la data:
-            ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-10:])
+        if tablaRegistros != None: #!= None: Si la lista del archivo no devuelve vacio, mostramos la data:
+            ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
         else:
             print("No se pudo procesar el archivo!!!")
-            #mensajesErrores.append("No se pudo procesar el archivo!!!")
+            #mensajesErroresArchivo.append("No se pudo procesar el archivo!!!")
     else:
         #print("El archivo no existe")
-        mensajesErrores.append("El archivo no existe")
+        mensajesErroresArchivo.append("El archivo no existe")
     
     #Impresion de errores por consola que se hayan acumulado. Ojo, esto nos va a servir para controlar los errores generales
-    for error in mensajesErrores:
+    for error in mensajesErroresArchivo:
         print(error)
-    
+    #refreshArchivo()
     manager.run() #Cargado todo, inicializamos el servidor.
     
     

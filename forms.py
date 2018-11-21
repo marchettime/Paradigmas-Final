@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, validators
-from wtforms.validators import Required, Length
+from wtforms import StringField, SubmitField, PasswordField, DecimalField, IntegerField, validators
+from wtforms.validators import Required, Length, Regexp, NumberRange
 
 
 class LoginForm(FlaskForm):
@@ -8,11 +8,9 @@ class LoginForm(FlaskForm):
     password = PasswordField('Contraseña', validators=[Required()])
     enviar = SubmitField('Ingresar')
 
-
 class SaludarForm(FlaskForm):
     usuario = StringField('Nombre: ', validators=[Required()])
     enviar = SubmitField('Saludar')
-
 
 class RegistrarForm(LoginForm):
     password_check = PasswordField('Verificar Contraseña', validators=[Required()])
@@ -21,9 +19,13 @@ class RegistrarForm(LoginForm):
 class BuscarForm(FlaskForm):
     palabra = StringField(u'Ingrese su filtro:', validators=[Required(),Length(min=3)])
     enviar = SubmitField('Buscar')
+
+class AltaVentaForm(FlaskForm):
+    codigo = StringField(u'Codigo de Producto:', validators=[Required(), Regexp('[A-Z]+[A-Z]+[A-Z]+[0-9]+[0-9]+[0-9]+',message='Debe cumplir con el formato: 3 letras mayúsculas y 3 números'), Length(min=6, max=6, message='No cumple con el largo necesario')])
+    producto = StringField(u'Nombre de Producto:', validators=[Required()])
+    cantidad = IntegerField(u'Cantidad:', validators=[Required(), NumberRange(min=1)])
+    precio = DecimalField('Precio Unitario de Producto: ', places=2, rounding=None, use_locale=False, validators=[Required()])
+    nombreCliente = StringField(u'Nombre de Cliente:', validators=[Required()])
+    enviar = SubmitField('Registrar!')
     
-#class BuscarOpcionForm(FlaskForm, opciones):
-    #palabra = StringField(u'Ingrese su filtro:', validators=[Required(),Length(min=6, message=('Too short for an email address?'))])
-    #opcion = SelectedField('Valores encontrado:', choiches=[opciones])
-    #enviar = SubmitField('Buscar')
 

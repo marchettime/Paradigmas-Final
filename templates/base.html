@@ -23,12 +23,14 @@
         <div class="navbar-collapse collapse">
 			{% if session['username'] %}
 			<ul class="nav navbar-nav">
-                <li><a href="/">Inicio</a></li>
+                <!--<li><a href="/">Inicio</a></li>-->
 				{% if session['username'] == 'admin' %}
 					<li><a href="/registrar">Registrar Usuario</a></li>
 				{% endif %}
 				<!--Accesos a tablas (logueado)-->
 				{% if errores|length == 0  %}
+				<li><a href="/AddSale">+ Venta</a></li>
+				<li><a href="/LatestSales">Ultimas Ventas</a></li>
 				<li><a href="/ProdsByClient">Productos X Cliente</a></li>
 				<li><a href="/ClientsByProd">Clientes X Producto</a></li>
 				<li><a href="/MostSoldProds">Productos Más Vendidos</a></li>
@@ -62,6 +64,10 @@
 
 {% block scripts %}
 {{ super() }}
+{% endblock %}
+
+{% block footer %}
+    Copyright 2018 <a href="http://google.com">ENTRA A GOOGLE!</a>.
 {% endblock %}
 
 
