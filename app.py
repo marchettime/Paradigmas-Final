@@ -84,7 +84,7 @@ def registrar():
         if formulario.validate_on_submit():
             if formulario.password.data == formulario.password_check.data:
                 with open('usuarios', 'a+') as archivo:
-                    archivo_csv = csv.writer(archivo)
+                    archivo_csv = csv.writer(archivo, lineterminator="\n")
                     registro = [formulario.usuario.data, formulario.password.data]
                     archivo_csv.writerow(registro)
                 flash('Usuario creado correctamente')
@@ -116,8 +116,8 @@ def logout():
 @app.route('/LatestSales', methods=['GET','POST'])
 def ultimasVentas():
     if 'username' in session:
-        tablaRegistros = cargaArchivo()
-        if len(mensajesErroresArchivo) == 0:
+        tablaRegistros = cargaArchivo() #Vuelvo a procesar el archivo y lo traigo a memoria. No solo yo puedo estar trabajando agregando registros.
+        if len(mensajesErroresArchivo) == 0: #como no asumo que sea valido porque puede ser que aparecio otro, valido, si esta OK, corto los ultimos 5.
             if tablaRegistros != None: #Si la lista del archivo no devuelve vacio, mostramos la data:
                 ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
             return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
@@ -135,16 +135,16 @@ def agregarVenta():
             return render_template('AddSale.html', formulario=formulario)
         else: 
             if request.method == 'POST' and formulario.validate():
-                venta = LineaTabla('','','','','')
-                ventaOrdenado = ['','','','','']
-                venta.codigo = formulario.codigo.data
-                venta.producto = formulario.producto.data
-                venta.cantidad = formulario.cantidad.data
-                venta.precioUnitario = formulario.precio.data
-                venta.cliente = formulario.nombreCliente.data
+                venta = LineaTabla('','','','','') #Genero una clase para pasar los datos del formulario(no hay necesiadad pero, es mas prolijo a mi gusto)
+                ventaOrdenado = ['','','','',''] #Generamos un vector posicional para importar a la base, nos sirve para poner segun la cabecera
+                venta.codigo = formulario.codigo.data        #Traslado de dato de formulario a objeto venta
+                venta.producto = formulario.producto.data    #Traslado de dato de formulario a objeto venta
+                venta.cantidad = formulario.cantidad.data    #Traslado de dato de formulario a objeto venta
+                venta.precioUnitario = formulario.precio.data#Traslado de dato de formulario a objeto venta
+                venta.cliente = formulario.nombreCliente.data#Traslado de dato de formulario a objeto venta
                 print('CODIGO: {0} | PRODUCTO: {1} | CANTIDAD: {2} | PRECIO: {3} | CLIENTE: {4}'.format(venta.codigo,venta.producto,venta.cantidad,venta.precioUnitario,venta.cliente))
                 i = 0
-                while i < 5:
+                while i < 5: #comparo valores y los importo segun corresponda al orden de aparicion de la CABECERA
                     if cabeceras[i] == 'CODIGO':
                         ventaOrdenado[i] = venta.codigo
                     elif cabeceras[i] == 'PRODUCTO':
@@ -157,20 +157,15 @@ def agregarVenta():
                         ventaOrdenado[i] = venta.precioUnitario
                     i = i + 1
                 
-                pre = 0
-                while pre < 5:
-                    print('CABECERA: {0} | DATO FORMULARIO: {1}'.format(cabeceras[pre],ventaOrdenado[pre]))
-                    pre = pre + 1
-                #COPIA DE ALTA DE USUARIOS    
+                #Preparado de escritura del archivo. ponemos delimitador de linea para que no rompa por el SO trabajado 
                 with open('ventas', 'a+') as archivo:
-                    archivo_csv = csv.writer(archivo)
+                    archivo_csv = csv.writer(archivo, lineterminator="\n")
                     registro = [ventaOrdenado[0],ventaOrdenado[1],ventaOrdenado[2],ventaOrdenado[3],ventaOrdenado[4]]
                     archivo_csv.writerow(registro)
-                flash('Venta registrada con éxito!')
-                return redirect(url_for('LatestSales'))
-                #return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
+                flash('¡Venta registrada con éxito!') #Mensaje para informar que se hizo todo OK! :)
+                return redirect(url_for('ultimasVentas')) #redirecciono a las Ultimas ventas para uqe le muestre todito con el reprocesamiento
             else:
-                return render_template('AddSale.html', formulario=formulario)
+                return render_template('AddSale.html', formulario=formulario) #Si mandamos nuevamente el formulario va a ver los errores!
     else:
         return render_template('sin_permiso.html') 
 
@@ -394,19 +389,12 @@ if __name__ == "__main__":
     # app.run(host='0.0.0.0', debug=True)
     if os.path.isfile('ventas'): #Con esta libreria nos permite verificar la existencia del archivo
         tablaRegistros = cargaArchivo()
-        if tablaRegistros != None: #!= None: Si la lista del archivo no devuelve vacio, mostramos la data:
-            ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
-        else:
-            print("No se pudo procesar el archivo!!!")
-            #mensajesErroresArchivo.append("No se pudo procesar el archivo!!!")
     else:
-        #print("El archivo no existe")
         mensajesErroresArchivo.append("El archivo no existe")
     
     #Impresion de errores por consola que se hayan acumulado. Ojo, esto nos va a servir para controlar los errores generales
     for error in mensajesErroresArchivo:
         print(error)
-    #refreshArchivo()
     manager.run() #Cargado todo, inicializamos el servidor.
     
     

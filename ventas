@@ -1,1 +1,48 @@
-PRECIO,PRODUCTO,CANTIDAD,CODIGO,CLIENTE0.87,Thompson Blue,68,DCD354,Paula Elliott0.87,Thompson Blue,68,DCD354,Paula Elliott9.11,Algoma Yellow,52,ZAW341,Jane Gomez6.92,Lukken Crimson,54,AHD214,Paula Elliott7.77,Melrose Turquoise,49,ZPV834,Jane Gomez5.44,Starling Aquamarine,25,VWM896,Paula Elliott8.23,Sarcoline,21,SIJ372,Todd Jackson2.56,Smaragdine,26,JTG679,Jessie Harrison4.15,Mikado,2,NJB643,Clifton Peters2.75,Glaucous,4,OKU860,Brian Reyes0.87,Thompson Blue,8,DCD354,Ruby Spencer9.11,Algoma Yellow,6,ZAW341,Blanca Gutierrez6.92,Lukken Crimson,5,AHD214,Nina Wong7.77,Melrose Turquoise,4,ZPV834,Jane Gomez5.44,Starling Aquamarine,2,VWM896,Orville Higgins8.23,Sarcoline,10,SIJ372,Marsha Stewart2.56,Smaragdine,3,JTG679,Lynda Steele4.15,Mikado,41,NJB643,Candice Larson2.75,Glaucous,12,OKU860,Cristina Kelley9.11,Algoma Yellow,22,ZAW341,Marilyn Reynolds6.92,Lukken Crimson,11,AHD214,Cathy Vargas7.77,Melrose Turquoise,26,ZPV834,Lionel Jackson5.44,Starling Aquamarine,6,VWM896,Erika Carr8.23,Sarcoline,2,SIJ372,Lucas Walton2.56,Smaragdine,7,JTG679,Lindsey Vega4.15,Mikado,9,NJB643,Clifton Peters2.75,Glaucous,11,OKU860,Arturo Schneider0.87,Thompson Blue,12,DCD354,Rafael Moody9.11,Algoma Yellow,10,ZAW341,Tina Hicks6.92,Lukken Crimson,54,AHD214,Nicolas Hughes7.77,Melrose Turquoise,49,ZPV834,Bruce Doyle5.44,Starling Aquamarine,25,VWM896,Allison Fowler8.23,Sarcoline,4,SIJ372,Todd Jackson2.56,Smaragdine,2,JTG679,Rickey Craig4.15,Mikado,5,NJB643,Clifton Peters2.75,Glaucous,23,OKU860,Margaret Caldwell0.87,Thompson Blue,68,DCD354,Antonia Wallace9.11,Algoma Yellow,5,ZAW341,Sally James6.92,Lukken Crimson,54,AHD214,Tommie Williamson7.77,Melrose Turquoise,49,ZPV834,Terri Quinn5.44,Starling Aquamarine,25,VWM896,Terrence Johnston8.23,Sarcoline,1,SIJ372,Eileen Bennett2.56,Smaragdine,4,JTG679,Becky Roberts4.15,Mikado,1,NJB643,Marlon Leonard2.75,Glaucous,5,OKU860,Alice Norton2.90,PRUEBA 001,1,PRU001,CLIENTE PRUEBA ALTA2.80,PRUEBA 002,3,PRU002,PRUEBA DE ALTA4,PRUEBA 003,5,PRU003,CLIENTE DE PRUEBA 3
+CODIGO,PRODUCTO,CLIENTE,CANTIDAD,PRECIO
+DCD354,Thompson Blue,Paula Elliott,68,0.87
+ZAW341,Algoma Yellow,Jane Gomez,52,9.11
+AHD214,Lukken Crimson,Paula Elliott,54,6.92
+ZPV834,Melrose Turquoise,Jane Gomez,49,7.77
+VWM896,Starling Aquamarine,Paula Elliott,25,5.44
+SIJ372,Sarcoline,Todd Jackson,21,8.23
+JTG679,Smaragdine,Jessie Harrison,26,2.56
+NJB643,Mikado,Clifton Peters,2,4.15
+OKU860,Glaucous,Brian Reyes,4,2.75
+DCD354,Thompson Blue,Ruby Spencer,8,0.87
+ZAW341,Algoma Yellow,Blanca Gutierrez,6,9.11
+AHD214,Lukken Crimson,Nina Wong,5,6.92
+ZPV834,Melrose Turquoise,Jane Gomez,4,7.77
+VWM896,Starling Aquamarine,Orville Higgins,2,5.44
+SIJ372,Sarcoline,Marsha Stewart,10,8.23
+JTG679,Smaragdine,Lynda Steele,3,2.56
+NJB643,Mikado,Candice Larson,41,4.15
+OKU860,Glaucous,Cristina Kelley,12,2.75
+ZAW341,Algoma Yellow,Marilyn Reynolds,22,9.11
+AHD214,Lukken Crimson,Cathy Vargas,11,6.92
+ZPV834,Melrose Turquoise,Lionel Jackson,26,7.77
+VWM896,Starling Aquamarine,Erika Carr,6,5.44
+SIJ372,Sarcoline,Lucas Walton,2,8.23
+JTG679,Smaragdine,Lindsey Vega,7,2.56
+NJB643,Mikado,Clifton Peters,9,4.15
+OKU860,Glaucous,Arturo Schneider,11,2.75
+DCD354,Thompson Blue,Rafael Moody,12,0.87
+ZAW341,Algoma Yellow,Tina Hicks,10,9.11
+AHD214,Lukken Crimson,Nicolas Hughes,54,6.92
+ZPV834,Melrose Turquoise,Bruce Doyle,49,7.77
+VWM896,Starling Aquamarine,Allison Fowler,25,5.44
+SIJ372,Sarcoline,Todd Jackson,4,8.23
+JTG679,Smaragdine,Rickey Craig,2,2.56
+NJB643,Mikado,Clifton Peters,5,4.15
+OKU860,Glaucous,Margaret Caldwell,23,2.75
+DCD354,Thompson Blue,Antonia Wallace,68,0.87
+ZAW341,Algoma Yellow,Sally James,5,9.11
+AHD214,Lukken Crimson,Tommie Williamson,54,6.92
+ZPV834,Melrose Turquoise,Terri Quinn,49,7.77
+VWM896,Starling Aquamarine,Terrence Johnston,25,5.44
+SIJ372,Sarcoline,Eileen Bennett,1,8.23
+JTG679,Smaragdine,Becky Roberts,4,2.56
+NJB643,Mikado,Marlon Leonard,1,4.15
+OKU860,Glaucous,Alice Norton,5,2.75
+PRU100,PRUEBA CAMBIADO DE ORDEN,OTRAS COLUMNAS,4,1.08
+PRU102,NAMEPROD 102,PURTO,44,1.09
+PRU101,"PRODUCTO, NOMBRE",HOLA,3,1.09
