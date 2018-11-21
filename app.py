@@ -317,7 +317,7 @@ if __name__ == "__main__":
     if os.path.isfile('ventas'): #Con esta libreria nos permite verificar la existencia del archivo
         tablaRegistros = cargaArchivo()
         if tablaRegistros != None: #Si la lista del archivo no devuelve vacio, mostramos la data:
-            ultimasVentas = tablaRegistros[len(tablaRegistros)-10:]
+            ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-10:])
         else:
             print("No se pudo procesar el archivo!!!")
             #mensajesErrores.append("No se pudo procesar el archivo!!!")

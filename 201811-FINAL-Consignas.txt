@@ -1,0 +1,13 @@
+******Final******
+Se desea agregar una nueva sección al programa que permita cargar nuevas ventas:
+
+	1.Debe aparecer en el menú de la aplicación.
+	2.Al hacer click en el menú correspondiente, la aplicación debe mostrar un formulario para la carga de ventas.
+	3.Debe cargarse código de producto, nombre del producto, cliente, cantidad y precio.
+	4.Debe validarse que:
+		1.el código ingresado respete el formato convenido,
+		2.la cantidad tiene que ser un entero,
+		3.el precio tiene que ser un número decimal.
+		4.Todos los campos son requeridos.
+	5.Si las validaciones son correctas, la información debe escribirse en el CSV que tienen la base de datos.
+	6.Luego de eso debe mostrarse la vista de "Últimas ventas" donde se vea la información recientemente cargada.
