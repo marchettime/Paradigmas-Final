@@ -27,6 +27,7 @@ ultimasVentas = None
 mensajesErroresArchivo = []
 mensajesErroresAltaVenta = []
 cabeceras = ['','','','',''] #Lo defino global adrede porque lo tengo que tener en cuenta al momento de grabar!
+existeArchivo = False
 
 @app.route('/')
 def index():
@@ -35,20 +36,18 @@ def index():
 
 @app.errorhandler(404)
 def no_encontrado(e):
-    return render_template('404.html'), 404
+    return render_template('404.html', errores=mensajesErroresArchivo), 404
 
 
 @app.errorhandler(500)
 def error_interno(e):
-    return render_template('500.html'), 500
+    return render_template('500.html', errores=mensajesErroresArchivo), 500
 
 
 
 @app.route('/ingresar', methods=['GET', 'POST'])
 def ingresar():
-    tablaRegistros = cargaArchivo()
-    if tablaRegistros != None: 
-            ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
+    
     if 'username' not in session:
         formulario = LoginForm()
         if formulario.validate_on_submit():
@@ -59,6 +58,12 @@ def ingresar():
                     if formulario.usuario.data == registro[0] and formulario.password.data == registro[1]:
                         flash('Bienvenido') #flash es cola de mensaje
                         session['username'] = formulario.usuario.data
+                        tablaRegistros = cargaArchivo()
+                        if tablaRegistros != None: 
+                            if len(tablaRegistros)>5:
+                                ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
+                            else:
+                                ultimasVentas = reversed(tablaRegistros)#[len(tablaRegistros):])
                         if len(mensajesErroresArchivo) == 0:
                             return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
                         else: 
@@ -69,6 +74,12 @@ def ingresar():
                     return redirect(url_for('ingresar'))
         return render_template('login.html', formulario=formulario)
     else:
+        tablaRegistros = cargaArchivo()
+        if tablaRegistros != None: 
+            if len(tablaRegistros)>5:
+                ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
+            else:
+                ultimasVentas = reversed(tablaRegistros)#Si es inferior al top 5 que queremos armar, simplemente que lo invierta :D
         if len(mensajesErroresArchivo) == 0:
             return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
         else: 
@@ -144,6 +155,7 @@ def agregarVenta():
                 venta.cliente = formulario.nombreCliente.data#Traslado de dato de formulario a objeto venta
                 print('CODIGO: {0} | PRODUCTO: {1} | CANTIDAD: {2} | PRECIO: {3} | CLIENTE: {4}'.format(venta.codigo,venta.producto,venta.cantidad,venta.precioUnitario,venta.cliente))
                 i = 0
+                print(formulario.precio)
                 while i < 5: #comparo valores y los importo segun corresponda al orden de aparicion de la CABECERA
                     if cabeceras[i] == 'CODIGO':
                         ventaOrdenado[i] = venta.codigo
@@ -341,9 +353,12 @@ def cargaArchivo(): #Guardamos el archivo en una Matriz
     #Finalizada la carga, validamos el largo de lo que cargamos, no sea inferior al archivo leido
     print("Registros en Archivo:", nroLinea, "| Registros Procesados OK:", len(listaDelArchivo))
     if len(listaDelArchivo)< nroLinea:
+        #impresion en consola:
+        for msjError in mensajesErroresArchivo:
+            print (" ♦ {0}".format(msjError))
         mensaje = "Registros en Archivo: {0} | Registros Procesados OK: {1}".format(nroLinea, len(listaDelArchivo))
-        #mensaje = ("Registros en Archivo:", nroLinea, "| Registros Procesados OK:", len(listaDelArchivo))
         mensajesErroresArchivo.append(mensaje)
+        
         return None
     else:
         return listaDelArchivo
@@ -388,7 +403,11 @@ def validacionCampoPrecio(campo, nroLinea): #Flotante con 2 decimales
 if __name__ == "__main__":
     # app.run(host='0.0.0.0', debug=True)
     if os.path.isfile('ventas'): #Con esta libreria nos permite verificar la existencia del archivo
-        tablaRegistros = cargaArchivo()
+        if os.stat("ventas").st_size == 0:
+            mensajesErroresArchivo.append("×El archivo se encuentra VACIO")
+        else:
+            existeArchivo = True
+            tablaRegistros = cargaArchivo()
     else:
         mensajesErroresArchivo.append("El archivo no existe")
     
