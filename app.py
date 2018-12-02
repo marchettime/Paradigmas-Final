@@ -27,7 +27,6 @@ ultimasVentas = None
 mensajesErroresArchivo = []
 mensajesErroresAltaVenta = []
 cabeceras = ['','','','',''] #Lo defino global adrede porque lo tengo que tener en cuenta al momento de grabar!
-existeArchivo = False
 
 @app.route('/')
 def index():
@@ -47,7 +46,6 @@ def error_interno(e):
 
 @app.route('/ingresar', methods=['GET', 'POST'])
 def ingresar():
-    
     if 'username' not in session:
         formulario = LoginForm()
         if formulario.validate_on_submit():
@@ -58,34 +56,14 @@ def ingresar():
                     if formulario.usuario.data == registro[0] and formulario.password.data == registro[1]:
                         flash('Bienvenido') #flash es cola de mensaje
                         session['username'] = formulario.usuario.data
-                        tablaRegistros = cargaArchivo()
-                        if tablaRegistros != None: 
-                            if len(tablaRegistros)>5:
-                                ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
-                            else:
-                                ultimasVentas = reversed(tablaRegistros)#[len(tablaRegistros):])
-                        if len(mensajesErroresArchivo) == 0:
-                            return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
-                        else: 
-                            return render_template('ingresado.html', errores = mensajesErroresArchivo)
+                        return redirect(url_for('ultimasVentas'))
                     registro = next(archivo_csv, None)
                 else:
                     flash('Revisá nombre de usuario y contraseña')
                     return redirect(url_for('ingresar'))
         return render_template('login.html', formulario=formulario)
     else:
-        tablaRegistros = cargaArchivo()
-        if tablaRegistros != None: 
-            if len(tablaRegistros)>5:
-                ultimasVentas = reversed(tablaRegistros[len(tablaRegistros)-5:])
-            else:
-                ultimasVentas = reversed(tablaRegistros)#Si es inferior al top 5 que queremos armar, simplemente que lo invierta :D
-        if len(mensajesErroresArchivo) == 0:
-            return render_template('LatestSales.html', ultimasVentas = ultimasVentas)
-        else: 
-            return render_template('ingresado.html', errores = mensajesErroresArchivo)
-        #return render_template('ingresado.html', errores = mensajesErroresArchivo)
-        #return render_template('ingresado.html', ultimasVentas = ultimasVentas, errores = mensajesErroresArchivo)
+        return redirect(url_for('ultimasVentas'))
 
 
 @app.route('/registrar', methods=['GET', 'POST'])
@@ -142,20 +120,17 @@ def agregarVenta():
     if 'username' in session:
         formulario = AltaVentaForm()
         if request.method == 'GET':
-            formulario = AltaVentaForm()
             return render_template('AddSale.html', formulario=formulario)
         else: 
             if request.method == 'POST' and formulario.validate():
                 venta = LineaTabla('','','','','') #Genero una clase para pasar los datos del formulario(no hay necesiadad pero, es mas prolijo a mi gusto)
                 ventaOrdenado = ['','','','',''] #Generamos un vector posicional para importar a la base, nos sirve para poner segun la cabecera
-                venta.codigo = formulario.codigo.data        #Traslado de dato de formulario a objeto venta
+                venta.codigo = formulario.codigo.data.upper()       #Traslado de dato de formulario a objeto venta
                 venta.producto = formulario.producto.data    #Traslado de dato de formulario a objeto venta
                 venta.cantidad = formulario.cantidad.data    #Traslado de dato de formulario a objeto venta
                 venta.precioUnitario = formulario.precio.data#Traslado de dato de formulario a objeto venta
                 venta.cliente = formulario.nombreCliente.data#Traslado de dato de formulario a objeto venta
-                print('CODIGO: {0} | PRODUCTO: {1} | CANTIDAD: {2} | PRECIO: {3} | CLIENTE: {4}'.format(venta.codigo,venta.producto,venta.cantidad,venta.precioUnitario,venta.cliente))
                 i = 0
-                print(formulario.precio)
                 while i < 5: #comparo valores y los importo segun corresponda al orden de aparicion de la CABECERA
                     if cabeceras[i] == 'CODIGO':
                         ventaOrdenado[i] = venta.codigo
@@ -171,9 +146,8 @@ def agregarVenta():
                 
                 #Preparado de escritura del archivo. ponemos delimitador de linea para que no rompa por el SO trabajado 
                 with open('ventas', 'a+') as archivo:
-                    archivo_csv = csv.writer(archivo, lineterminator="\n")
-                    registro = [ventaOrdenado[0],ventaOrdenado[1],ventaOrdenado[2],ventaOrdenado[3],ventaOrdenado[4]]
-                    archivo_csv.writerow(registro)
+                    archivo_csv = csv.writer(archivo, lineterminator="\n")#Para que escriba bien el archivo, le demarco el terminador de linea
+                    archivo_csv.writerow(ventaOrdenado)
                 flash('¡Venta registrada con éxito!') #Mensaje para informar que se hizo todo OK! :)
                 return redirect(url_for('ultimasVentas')) #redirecciono a las Ultimas ventas para uqe le muestre todito con el reprocesamiento
             else:
@@ -305,13 +279,10 @@ def mejoresClientes():
    
     
 def cargaArchivo(): #Guardamos el archivo en una Matriz
-    #generar matriz de datos | Cabeceras: CODIGO,PRODUCTO,CLIENTE,CANTIDAD,PRECIO
-    
     nroLinea = -1
     muestra = LineaTabla('','','','','')
     listaDelArchivo = []
     mensajesErroresArchivo.clear()
-   
     with open('ventas') as archivo: #carga de archivo de ventas
         archivo_csv = csv.reader(archivo)
         registro = next(archivo_csv)#next toma el primer registro
@@ -404,13 +375,11 @@ if __name__ == "__main__":
     # app.run(host='0.0.0.0', debug=True)
     if os.path.isfile('ventas'): #Con esta libreria nos permite verificar la existencia del archivo
         if os.stat("ventas").st_size == 0:
-            mensajesErroresArchivo.append("×El archivo se encuentra VACIO")
+            mensajesErroresArchivo.append("× El archivo se encuentra VACIO")
         else:
-            existeArchivo = True
             tablaRegistros = cargaArchivo()
     else:
-        mensajesErroresArchivo.append("El archivo no existe")
-    
+        mensajesErroresArchivo.append("× El archivo no existe")
     #Impresion de errores por consola que se hayan acumulado. Ojo, esto nos va a servir para controlar los errores generales
     for error in mensajesErroresArchivo:
         print(error)
