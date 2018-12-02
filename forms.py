@@ -24,7 +24,7 @@ class AltaVentaForm(FlaskForm):
     codigo = StringField(u'Codigo de Producto:', validators=[Required(), Regexp('[A-Z]+[A-Z]+[A-Z]+[0-9]+[0-9]+[0-9]+',message='Debe cumplir con el formato: 3 letras mayúsculas y 3 números'), Length(min=6, max=6, message='No cumple con el largo necesario')])
     producto = StringField(u'Nombre de Producto:', validators=[Required(), Length(min=3, message='Ingresar minimo 3 caracteres')])
     cantidad = IntegerField(u'Cantidad:', validators=[Required(), NumberRange(min=1,message='Minimo valor admitido: 1')])
-    precio = StringField(u'Precio Unitario de Producto (en $): ', validators=[Required(), Regexp('[0-9]+.[0-9][0-9]?',message='Debe ingresar un valor tipo: N.NN')])
+    precio = StringField(u'Precio Unitario de Producto (en $): ', validators=[Required(), Regexp('^\d+(\.\d{1,2})?$',message='Debe ingresar un valor tipo: N.NN')])
 	#precio = DecimalField(u'Precio Unitario de Producto (en $): ', places = 2, use_locale=False, validators=[Required(), NumberRange(min=0.01,message='$Minimo valor admitido: 0.01')])
     nombreCliente = StringField(u'Nombre de Cliente:', validators=[Required(), Length(min=3, message='Ingresar minimo 3 caracteres')])
     enviar = SubmitField('Registrar!')
