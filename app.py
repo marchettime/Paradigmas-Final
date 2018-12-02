@@ -16,8 +16,7 @@ import pandas as pd
 app = Flask(__name__)
 manager = Manager(app)
 bootstrap = Bootstrap(app)
-app.config['SECRET_KEY'] = 'un string que funcione como llave'
-#String que funciona como llave
+app.config['SECRET_KEY'] = 'un string que funcione como llave'#String que funciona como llave
 tablaRegistros = None
 tablaFiltrada = None
 ultimasVentas = None
@@ -28,17 +27,13 @@ cabeceras = ['','','','',''] #Lo defino global adrede porque lo tengo que tener 
 def index():
     return render_template('index.html', fecha_actual=datetime.utcnow(), errores = mensajesErroresArchivo)
 
-
 @app.errorhandler(404)
 def no_encontrado(e):
     return render_template('404.html', errores=mensajesErroresArchivo), 404
 
-
 @app.errorhandler(500)
 def error_interno(e):
     return render_template('500.html', errores=mensajesErroresArchivo), 500
-
-
 
 @app.route('/ingresar', methods=['GET', 'POST'])
 def ingresar():
@@ -61,7 +56,6 @@ def ingresar():
     else:
         return redirect(url_for('ultimasVentas'))
 
-
 @app.route('/registrar', methods=['GET', 'POST'])
 def registrar():
     if 'username' in session and session['username'] == 'admin':
@@ -79,7 +73,6 @@ def registrar():
         return render_template('registrar.html', form=formulario, errores = mensajesErroresArchivo)
     else:
         return render_template('sin_permiso.html')
-
     
 @app.route('/secret', methods=['GET'])
 def secreto():
@@ -87,7 +80,6 @@ def secreto():
         return render_template('private.html', username=session['username'])
     else:
         return render_template('sin_permiso.html')
-
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -139,7 +131,6 @@ def agregarVenta():
                     elif cabeceras[i] == 'PRECIO':
                         ventaOrdenado[i] = venta.precioUnitario
                     i = i + 1
-                
                 #Preparado de escritura del archivo. ponemos delimitador de linea para que no rompa por el SO trabajado 
                 with open('ventas', 'a+') as archivo:
                     archivo_csv = csv.writer(archivo, lineterminator="\n")#Para que escriba bien el archivo, le demarco el terminador de linea
@@ -151,7 +142,6 @@ def agregarVenta():
     else:
         return render_template('sin_permiso.html') 
 
-
 ###INICIO DE PARCIAL###
 #/ProdsByClient - Productos por Cliente
 @app.route('/ProdsByClient', methods=['GET','POST'])
@@ -160,12 +150,10 @@ def productosPorCliente():
         tablaRegistros = cargaArchivo()
         if len(mensajesErroresArchivo) == 0:
             formularioBuscar = BuscarForm()
-            # 
             #Me baso en buscar si se completo una seleccion mediante el post
             #esto nos permitira forzar la busqueda al unico registro encontrado!
             if request.method == 'POST' and request.form.get('seleccion') != None:
                 formularioBuscar.palabra.data = str(request.form.get('seleccion')) #va el nombre del select
-                
             if request.method == 'POST' and len(formularioBuscar.palabra.data)>=3:
                 #Concepto de Filtrado: se declara un tipo de variable, para que busque en una tabla, segun los atributos de su clase.
                 tablaFiltrada = [row for row in tablaRegistros if formularioBuscar.palabra.data.upper() in row.cliente.upper()]
@@ -195,7 +183,6 @@ def clientesPorProducto():
         tablaRegistros = cargaArchivo()
         if len(mensajesErroresArchivo) == 0:
             formularioBuscar = BuscarForm()
-            # 
             #Me baso en buscar si se completo una seleccion mediante el post
             #esto nos permitira forzar la busqueda al unico registro encontrado!
             if request.method == 'POST' and request.form.get('seleccion') != None:
@@ -223,7 +210,6 @@ def clientesPorProducto():
     else:
         return render_template('sin_permiso.html')
 
-
 #/MostSoldProds - N Productos mas vendidos
 @app.route('/MostSoldProds', methods=['GET'])
 def productosMasVendidos():
@@ -239,16 +225,13 @@ def productosMasVendidos():
                 cantidades.append(int(registro.cantidad))
             listado = pd.DataFrame({'producto': listaProds, 'cantidad': cantidades})
             listaSumarizada = listado.groupby('producto').sum().sort_values(by=['cantidad'], ascending=False).head(5)
-            
             listaProds = listaSumarizada.reset_index()[['producto', 'cantidad']].values.tolist()
-    
             return render_template('MostSoldProds.html', filas=listaProds)
         else:
             return render_template('sin_datos.html', errores = mensajesErroresArchivo)
     else:
         return render_template('sin_permiso.html')
   
-
 #/BestClients - Mejores Clientes (Pedidos mas grandes)
 @app.route('/BestClients', methods=['GET'])
 def mejoresClientes():
@@ -273,7 +256,6 @@ def mejoresClientes():
     else:
         return render_template('sin_permiso.html')
    
-    
 def cargaArchivo(): #Guardamos el archivo en una Matriz
     nroLinea = -1
     LineaVenta = LineaTabla('','','','','')
@@ -328,7 +310,6 @@ def cargaArchivo(): #Guardamos el archivo en una Matriz
         return None
     else:
         return listaDelArchivo
-
     
 def validacionCantidadColumnas(registro, nroLinea): #Que sean 5. Y, que ninguna sea repetida.
     if len(registro) != 5:
@@ -339,7 +320,6 @@ def validacionCantidadColumnas(registro, nroLinea): #Que sean 5. Y, que ninguna 
     return True
     
 def validacionCampoCodigo(campo, nroLinea): #Valida el formato no admite nulo y 3 Letras + 3 numeros (validar que los primeros tres sea tipo string y los ultimos 3 sean numeros. no se debe extender de mas de 6 caracteres.
-    #Aca usamos 're' que fue importado al principio para utilizar expresion regular al momento de validar el campo
     if len(campo) == 6 and re.fullmatch(r'[A-Z]+',campo[0:3]) and re.fullmatch(r'[0-9]+',campo[3:6]):
         return True
     else:
@@ -351,7 +331,6 @@ def validacionCampoCantidad(campo, nroLinea): #Sólo pueden haber enteros
     if re.fullmatch(r'[0-9]+',campo):
         return True
     else:
-        #print("El campo \"CANTIDAD\" de la Línea {0} no cumple con el formato necesario!".format(nroLinea))
         msjError = ("El campo \"CANTIDAD\" de la Línea {0} no cumple con el formato necesario!".format(nroLinea))
         mensajesErroresArchivo.append(msjError)
         return False
@@ -360,14 +339,12 @@ def validacionCampoPrecio(campo, nroLinea): #Flotante con 2 decimales
     if re.fullmatch(r'[0-9]+(\.[0-9][0-9]?)?',campo):
         return True
     else:
-        #print("El campo \"PRECIO\" de la Línea {0} no cumple con el formato necesario!".format(nroLinea))
         msjError = ("El campo \"PRECIO\" de la Línea {0} no cumple con el formato necesario!".format(nroLinea))
         mensajesErroresArchivo.append(msjError)
         return False
  
- 
+#Programa Principal: Levantamiento de Servidor 
 if __name__ == "__main__":
-    # app.run(host='0.0.0.0', debug=True)
     if os.path.isfile('ventas'): #Con esta libreria nos permite verificar la existencia del archivo
         if os.stat("ventas").st_size == 0:
             mensajesErroresArchivo.append("× El archivo se encuentra VACIO")
