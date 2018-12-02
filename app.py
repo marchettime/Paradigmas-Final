@@ -1,10 +1,8 @@
-#!/usr/bin/env python
 import csv
 import re #Importamos re que es una libreria que tiene validadores por Expresiones Regulares. Esto nos sirve para validar los campos
 from datetime import datetime
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_bootstrap import Bootstrap
-# from flask_moment import Moment | Comentado por Colombo
 from flask_script import Manager
 from forms import LoginForm, SaludarForm, RegistrarForm, BuscarForm, AltaVentaForm
 #Import para verificar si existe el archivo ventas que vamos a usar para procesar:
@@ -18,14 +16,12 @@ import pandas as pd
 app = Flask(__name__)
 manager = Manager(app)
 bootstrap = Bootstrap(app)
-# moment = Moment(app)
 app.config['SECRET_KEY'] = 'un string que funcione como llave'
 #String que funciona como llave
 tablaRegistros = None
 tablaFiltrada = None
 ultimasVentas = None
 mensajesErroresArchivo = []
-mensajesErroresAltaVenta = []
 cabeceras = ['','','','',''] #Lo defino global adrede porque lo tengo que tener en cuenta al momento de grabar!
 
 @app.route('/')
@@ -280,7 +276,7 @@ def mejoresClientes():
     
 def cargaArchivo(): #Guardamos el archivo en una Matriz
     nroLinea = -1
-    muestra = LineaTabla('','','','','')
+    LineaVenta = LineaTabla('','','','','')
     listaDelArchivo = []
     mensajesErroresArchivo.clear()
     with open('ventas') as archivo: #carga de archivo de ventas
@@ -300,25 +296,25 @@ def cargaArchivo(): #Guardamos el archivo en una Matriz
                     while i < 5:
                         if cabeceras[i] == 'CODIGO':
                             if validacionCampoCodigo(registro[i], nroLinea+1):#Ponemos +1 porque es para el msj de error
-                                muestra.codigo=registro[i]
+                                LineaVenta.codigo=registro[i]
                         elif cabeceras[i] == 'PRODUCTO':
-                            muestra.producto=registro[i]
+                            LineaVenta.producto=registro[i]
                         elif cabeceras[i] == 'CLIENTE':
-                            muestra.cliente=registro[i]
+                            LineaVenta.cliente=registro[i]
                         elif cabeceras[i] == 'CANTIDAD':
                             if validacionCampoCantidad(registro[i], nroLinea+1):#Ponemos +1 porque es para el msj de error
-                                muestra.cantidad=registro[i]
+                                LineaVenta.cantidad=registro[i]
                         elif cabeceras[i] == 'PRECIO':
                             if validacionCampoPrecio(registro[i], nroLinea+1):#Ponemos +1 porque es para el msj de error
-                                muestra.precioUnitario=registro[i]
+                                LineaVenta.precioUnitario=registro[i]
                         else:
                             msjError = 'La columna informada no corresponde a un valor esperado'
                             mensajesErroresArchivo.append(msjError)
                             print(mensaje)
                         i = i + 1
-                    if muestra.codigo != '' and muestra.producto != '' and  muestra.cliente != '' and  muestra.cantidad != '' and  muestra.precioUnitario != '':
-                        listaDelArchivo.append(LineaTabla(muestra.codigo,muestra.producto, muestra.cliente, muestra.cantidad, muestra.precioUnitario))
-                    muestra = LineaTabla('','','','','')
+                    if LineaVenta.codigo != '' and LineaVenta.producto != '' and  LineaVenta.cliente != '' and  LineaVenta.cantidad != '' and  LineaVenta.precioUnitario != '':
+                        listaDelArchivo.append(LineaVenta)
+                    LineaVenta = LineaTabla('','','','','')
             registro = next(archivo_csv, None)
 
     #Finalizada la carga, validamos el largo de lo que cargamos, no sea inferior al archivo leido
@@ -329,7 +325,6 @@ def cargaArchivo(): #Guardamos el archivo en una Matriz
             print (" ♦ {0}".format(msjError))
         mensaje = "Registros en Archivo: {0} | Registros Procesados OK: {1}".format(nroLinea, len(listaDelArchivo))
         mensajesErroresArchivo.append(mensaje)
-        
         return None
     else:
         return listaDelArchivo

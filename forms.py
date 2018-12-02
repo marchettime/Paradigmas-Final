@@ -21,7 +21,7 @@ class BuscarForm(FlaskForm):
     enviar = SubmitField('Buscar')
 
 class AltaVentaForm(FlaskForm):
-    codigo = StringField(u'Codigo de Producto:', validators=[Required(), Regexp('[a-zA-Z]+[a-zA-Z]+[a-zA-Z]+[0-9]+[0-9]+[0-9]+',message='Debe cumplir con el formato: 3 letras mayúsculas y 3 números'), Length(min=6, max=6, message='No cumple con el largo necesario')])
+    codigo = StringField(u'Codigo de Producto:', validators=[Required(), Regexp('[a-zA-Z]+[a-zA-Z]+[a-zA-Z]+[0-9]+[0-9]+[0-9]+',message='Debe cumplir con el formato: 3 letras y 3 números'), Length(min=6, max=6, message='No cumple con el largo necesario')])
     producto = StringField(u'Nombre de Producto:', validators=[Required(), Length(min=3, message='Ingresar minimo 3 caracteres')])
     cantidad = IntegerField(u'Cantidad:', validators=[Required(), NumberRange(min=1,message='Minimo valor admitido: 1')])
     precio = StringField(u'Precio Unitario de Producto (en $): ', validators=[Required(), Regexp('^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$',message='Debe ingresar un valor tipo: N.NN')])
