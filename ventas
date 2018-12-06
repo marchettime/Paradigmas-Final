@@ -1,48 +1,51 @@
-CODIGO,PRODUCTO,CLIENTE,CANTIDAD,PRECIO
-DCD354,Thompson Blue,Paula Elliott,68,0.87
-ZAW341,Algoma Yellow,Jane Gomez,52,9.11
-AHD214,Lukken Crimson,Paula Elliott,54,6.92
-ZPV834,Melrose Turquoise,Jane Gomez,49,7.77
-VWM896,Starling Aquamarine,Paula Elliott,25,5.44
-SIJ372,Sarcoline,Todd Jackson,21,8.23
-JTG679,Smaragdine,Jessie Harrison,26,2.56
-NJB643,Mikado,Clifton Peters,2,4.15
-OKU860,Glaucous,Brian Reyes,4,2.75
-DCD354,Thompson Blue,Ruby Spencer,8,0.87
-ZAW341,Algoma Yellow,Blanca Gutierrez,6,9.11
-AHD214,Lukken Crimson,Nina Wong,5,6.92
-ZPV834,Melrose Turquoise,Jane Gomez,4,7.77
-VWM896,Starling Aquamarine,Orville Higgins,2,5.44
-SIJ372,Sarcoline,Marsha Stewart,10,8.23
-JTG679,Smaragdine,Lynda Steele,3,2.56
-NJB643,Mikado,Candice Larson,41,4.15
-OKU860,Glaucous,Cristina Kelley,12,2.75
-ZAW341,Algoma Yellow,Marilyn Reynolds,22,9.11
-AHD214,Lukken Crimson,Cathy Vargas,11,6.92
-ZPV834,Melrose Turquoise,Lionel Jackson,26,7.77
-VWM896,Starling Aquamarine,Erika Carr,6,5.44
-SIJ372,Sarcoline,Lucas Walton,2,8.23
-JTG679,Smaragdine,Lindsey Vega,7,2.56
-NJB643,Mikado,Clifton Peters,9,4.15
-OKU860,Glaucous,Arturo Schneider,11,2.75
-DCD354,Thompson Blue,Rafael Moody,12,0.87
-ZAW341,Algoma Yellow,Tina Hicks,10,9.11
-AHD214,Lukken Crimson,Nicolas Hughes,54,6.92
-ZPV834,Melrose Turquoise,Bruce Doyle,49,7.77
-VWM896,Starling Aquamarine,Allison Fowler,25,5.44
-SIJ372,Sarcoline,Todd Jackson,4,8.23
-JTG679,Smaragdine,Rickey Craig,2,2.56
-NJB643,Mikado,Clifton Peters,5,4.15
-OKU860,Glaucous,Margaret Caldwell,23,2.75
-DCD354,Thompson Blue,Antonia Wallace,68,0.87
-ZAW341,Algoma Yellow,Sally James,5,9.11
-AHD214,Lukken Crimson,Tommie Williamson,54,6.92
-ZPV834,Melrose Turquoise,Terri Quinn,49,7.77
-VWM896,Starling Aquamarine,Terrence Johnston,25,5.44
-SIJ372,Sarcoline,Eileen Bennett,1,8.23
-JTG679,Smaragdine,Becky Roberts,4,2.56
-NJB643,Mikado,Marlon Leonard,1,4.15
-OKU860,Glaucous,Alice Norton,5,2.75
-PRU100,PRUEBA CAMBIADO DE ORDEN,OTRAS COLUMNAS,4,1.08
-PRU102,NAMEPROD 102,PURTO,44,1.09
-PRU101,"PRODUCTO, NOMBRE",HOLA,3,1.09
+CLIENTE,CODIGO,PRODUCTO,PRECIO,CANTIDAD
+Paula Elliott,DCD354,Thompson Blue,0.87,68
+Jane Gomez,ZAW341,Algoma Yellow,9.11,52
+Paula Elliott,AHD214,Lukken Crimson,6.92,54
+Jane Gomez,ZPV834,Melrose Turquoise,7.77,49
+Paula Elliott,VWM896,Starling Aquamarine,5.44,25
+Todd Jackson,SIJ372,Sarcoline,8.23,21
+Jessie Harrison,JTG679,Smaragdine,2.56,26
+Clifton Peters,NJB643,Mikado,4.15,2
+Brian Reyes,OKU860,Glaucous,2.75,4
+Ruby Spencer,DCD354,Thompson Blue,0.87,8
+Blanca Gutierrez,ZAW341,Algoma Yellow,9.11,6
+Nina Wong,AHD214,Lukken Crimson,6.92,5
+Jane Gomez,ZPV834,Melrose Turquoise,7.77,4
+Orville Higgins,VWM896,Starling Aquamarine,5.44,2
+Marsha Stewart,SIJ372,Sarcoline,8.23,10
+Lynda Steele,JTG679,Smaragdine,2.56,3
+Candice Larson,NJB643,Mikado,4.15,41
+Cristina Kelley,OKU860,Glaucous,2.75,12
+Marilyn Reynolds,ZAW341,Algoma Yellow,9.11,22
+Cathy Vargas,AHD214,Lukken Crimson,6.92,11
+Lionel Jackson,ZPV834,Melrose Turquoise,7.77,26
+Erika Carr,VWM896,Starling Aquamarine,5.44,6
+Lucas Walton,SIJ372,Sarcoline,8.23,2
+Lindsey Vega,JTG679,Smaragdine,2.56,7
+Clifton Peters,NJB643,Mikado,4.15,9
+Arturo Schneider,OKU860,Glaucous,2.75,11
+Rafael Moody,DCD354,Thompson Blue,0.87,12
+Tina Hicks,ZAW341,Algoma Yellow,9.11,10
+Nicolas Hughes,AHD214,Lukken Crimson,6.92,54
+Bruce Doyle,ZPV834,Melrose Turquoise,7.77,49
+Allison Fowler,VWM896,Starling Aquamarine,5.44,25
+Todd Jackson,SIJ372,Sarcoline,8.23,4
+Rickey Craig,JTG679,Smaragdine,2.56,2
+Clifton Peters,NJB643,Mikado,4.15,5
+Margaret Caldwell,OKU860,Glaucous,2.75,23
+Antonia Wallace,DCD354,Thompson Blue,0.87,68
+Sally James,ZAW341,Algoma Yellow,9.11,5
+Tommie Williamson,AHD214,Lukken Crimson,6.92,54
+Terri Quinn,ZPV834,Melrose Turquoise,7.77,49
+Terrence Johnston,VWM896,Starling Aquamarine,5.44,25
+Eileen Bennett,SIJ372,Sarcoline,8.23,1
+Becky Roberts,JTG679,Smaragdine,2.56,4
+Marlon Leonard,NJB643,Mikado,4.15,1
+Alice Norton,OKU860,Glaucous,2.75,5
+OTRAS COLUMNAS,PRU100,PRUEBA CAMBIADO DE ORDEN,1.08,4
+PURTO,PRU102,NAMEPROD 102,1.09,44
+HOLA,PRU101,"PRODUCTO, NOMBRE",1.09,3
+LEANDRO COLOMBO,PRU612,PRODUCTO 06/12,1.25,20
+CLIENTE COMPRA MAYOR,PRU612,PRODUCTO 06/12,25,9999999
+CLIENTE DE PRUEBA,PRU612,PRODUCTO 06/12,1,1
