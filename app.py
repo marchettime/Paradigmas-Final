@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import Flask, render_template, redirect, url_for, flash, session, request
 from flask_bootstrap import Bootstrap
 from flask_script import Manager
-from forms import LoginForm, SaludarForm, RegistrarForm, BuscarForm, AltaVentaForm
+from forms import LoginForm, RegistrarForm, BuscarForm, AltaVentaForm
 #Import para verificar si existe el archivo ventas que vamos a usar para procesar:
 import os.path
 #Generamos un archivo que tenga las clases generadas por nosotros y las cargamos para su uso con un from
@@ -198,10 +198,10 @@ def clientesPorProducto():
                 #Con  numpy podemos hacer selecciones de diverso tipo en arrays, aca hacemos que nos traiga los unicos de un valor! :)
                 unicos = np.unique(productos)
                 #En caso de Detectar un valor demas, hacemos que vaya e impacte la tabla
-                if len(productos) == 1: #SI hay uno mando la tabla
-                    return render_template('ClientsByProd.html', formulario=formularioBuscar, filas=tablaFiltrada, filtro=formularioBuscar.palabra.data, opciones=unicos)
-                else: 
-                    return render_template('ClientsByProd.html', formulario=formularioBuscar, filas=tablaFiltrada, filtro=formularioBuscar.palabra.data, opciones=unicos)
+                #if len(productos) == 1: #SI hay uno mando la tabla
+                #    return render_template('ClientsByProd.html', formulario=formularioBuscar, filas=tablaFiltrada, filtro=formularioBuscar.palabra.data, opciones=unicos)
+                #else: 
+                return render_template('ClientsByProd.html', formulario=formularioBuscar, filas=tablaFiltrada, filtro=formularioBuscar.palabra.data, opciones=unicos)
             else:
                 flash('Recuerde que el filtro debe contener al menos 3 caracteres')
                 return render_template('ClientsByProd.html', formulario=formularioBuscar)
